@@ -12,7 +12,7 @@ dotenv.config();
 
 const url = process.env.MONGODB_URI;
 
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(`${url}`, { useNewUrlParser: true, useUnifiedTopology: true });
 const con = mongoose.connection;
 con.on("open", () => console.log("MONGODB is Connected"));
 

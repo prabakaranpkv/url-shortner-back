@@ -47,31 +47,6 @@ router
     } catch (err) {
       console.log(err);
     }
-  })
-
-  // update users
-  .patch(async (request, response) => {
-    const { id, firstName, lastName, email, mobileNo } = request.body;
-    try {
-      const findUser = await Users.findById({ _id: id });
-
-      if (firstName) {
-        findUser.firstName = firstName;
-      }
-      if (lastName) {
-        findUser.lastName = lastName;
-      }
-      if (email) {
-        findUser.email = email;
-      }
-      if (mobileNo) {
-        findUser.mobileNo = mobileNo;
-      }
-      await findUser.save();
-      response.send({ findUser, message: "Updated" });
-    } catch (err) {
-      console.log(err);
-    }
   });
 
 // signup
@@ -109,13 +84,13 @@ router.route("/signup").post(async (request, response) => {
       });
       console.log("mail is", mail);
       if (mail.accepted.length > 0) {
-        await response.send({
+        response.send({
           newUser,
           message:
             "Registration Success.kindly check your mail to activate your account! ",
         });
       } else if (mail.rejected.length == 1) {
-        await response.send({ message: "Registration failed" });
+        response.send({ message: "Registration failed" });
       }
     } catch (err) {
       console.log(err);
@@ -133,7 +108,7 @@ router.route("/verify").get(async (request, response) => {
       user.confirm = true;
       await user.save();
       response.send("Your Account is Activated");
-      // response.redirect(`http://localhost:3000/login`);
+      response.redirect(`https://url-shortner-front.netlify.app/login`);
     } else {
       response.status(401).json({ message: "Invalid Token" });
     }
@@ -165,7 +140,10 @@ router.route("/login").post(async (request, response) => {
         expires: new Date(new Date().getTime() + 3600 * 1000),
         httpOnly: true,
       });
-      return response.status(200).json({ message: "Logged in succuessfully" });
+      return response
+        .status(200)
+        .json({ message: "Logged in succuessfully" })
+        .redirect("https://url-shortner-front.netlify.app/shorten");
     } else {
       return response.status(401).send({ message: "Invalid credentials" });
     }
@@ -180,7 +158,7 @@ router.route("/forgot-password").post(async (request, response) => {
   const { email } = request.body;
   try {
     const user = await Users.findOne({ email: email });
-
+    console.log("user", user);
     crypto.randomBytes(32, async (err, buffer) => {
       if (err) {
         console.log(err);
@@ -205,12 +183,12 @@ router.route("/forgot-password").post(async (request, response) => {
       });
       console.log("Forgotmail is", ForgotMail);
       if (ForgotMail.accepted.length > 0) {
-        await response.send({
+        response.send({
           message: "Mail Sent for Forgot Password",
         });
         console.log(user);
       } else if (ForgotMail.rejected.length == 1) {
-        await response.send({ message: "Errors" });
+        response.send({ message: "Errors" });
       }
     });
   } catch (err) {
@@ -236,7 +214,7 @@ router.route("/reset-password").post(async (request, response) => {
     }
     console.log("updated User by Token", usersList);
     response.send({ message: "passwaord changed successfully", usersList });
-    // response.redirect("http://localhost:3000/login");
+    response.redirect("https://url-shortner-front.netlify.app/login");
   } catch (err) {
     response.send(err);
     console.log(err);
