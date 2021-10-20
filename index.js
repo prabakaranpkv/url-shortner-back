@@ -2,8 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import { shortnerRouter } from "./Routes/urlShortner.js";
-import { redirectRouter } from "./Routes/urlRedirect.js";
+import { shortnerRouter } from "./routes/urlShortner.js";
+import { redirectRouter } from "./routes/urlRedirect.js";
 import { userRouter } from "./routes/Authentication.js";
 
 const app = express();
